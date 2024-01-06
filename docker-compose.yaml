@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  component-api-container:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: component-api-container
+    ports:
+      - 9000
+      - 8083:8083
+    volumes:
+      - .:/app/user-alerts-component
+      - ./container-files/logs:/app/logs
+    environment:
+      - XDEBUG_SESSION=uac_session
+  component-database-container:
+    image: mysql:8.0
+    container_name: component-database-container
+    ports:
+      - 3309:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=*SafePas5sWoRd4R0ot*
+      - MYSQL_USER=component_api_user
+      - MYSQL_PASSWORD=*SafePas5sWoRd4us3R*
+    volumes:
+      - ./container-files/mysql-init:/docker-entrypoint-initdb.d
