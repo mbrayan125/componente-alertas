@@ -33,6 +33,10 @@ class ReadBpmnProcessUseCase implements ReadBpmnProcessUseCaseInterface
      */
     public function __invoke(string $bpmnPath): ReadBpmnUseCaseDRO
     {
+        if (!file_exists($bpmnPath)) {
+            return ReadBpmnUseCaseDRO::createFailure(['El archivo bpmn no existe']);
+        }
+
         if (!$this->loadBpmnXml($bpmnPath)) {
             return ReadBpmnUseCaseDRO::createFailure(['Error en la lectura del proceso BPMN']);
         }
