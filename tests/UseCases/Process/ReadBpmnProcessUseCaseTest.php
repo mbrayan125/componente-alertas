@@ -18,7 +18,6 @@ class ReadBpmnProcessUseCaseTest extends TestCase
         parent::setUp();
         $this->useCase = app()->make(ReadBpmnProcessUseCaseInterface::class);
     }
-
     
     /**
      * Test case to verify that invoking the method with a valid BPMN file returns a success result case 1.
