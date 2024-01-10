@@ -48,6 +48,24 @@ class ProcessElement extends AbstractModel
             ->wherePivot('direction', 'output');
     }
 
+    public function addIncoming(ProcessElement $incomingElement, string $relationName = '')
+    {
+        $this->addRelatedElement($incomingElement, 'input', $relationName);
+    }
+
+    public function addOutgoing(ProcessElement $outgoingElement, string $relationName = '')
+    {
+        $this->addRelatedElement($outgoingElement, 'output', $relationName);
+    }
+
+    private function addRelatedElement(ProcessElement $relatedElement, string $direction, string $relationName = '')
+    {
+        $this->relatedElements()->attach($relatedElement, [
+            'direction' => $direction,
+            'name'      => $relationName
+        ]);
+    }
+
     public static function getAllElementsTypes(): array
     {
         return [

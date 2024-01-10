@@ -1,0 +1,258 @@
+{
+    "success": true,
+    "data": {
+        "lanes": {
+            "Lane_112xjbx": {
+                "name": "Oogway",
+                "elements": {
+                    "Gateway_1cr0fsh": {
+                        "element_id": "Gateway_1cr0fsh"
+                    }
+                }
+            },
+            "Lane_00aaag5": {
+                "name": "Shifu",
+                "elements": {
+                    "StartEvent_1jljh4d": {
+                        "element_id": "StartEvent_1jljh4d"
+                    },
+                    "Gateway_18bgn17": {
+                        "element_id": "Gateway_18bgn17"
+                    },
+                    "Activity_0nvxiwo": {
+                        "element_id": "Activity_0nvxiwo"
+                    },
+                    "Activity_0ijoabm": {
+                        "element_id": "Activity_0ijoabm"
+                    },
+                    "Gateway_0ct7sfa": {
+                        "element_id": "Gateway_0ct7sfa"
+                    },
+                    "Activity_0xz4zs6": {
+                        "element_id": "Activity_0xz4zs6"
+                    },
+                    "Event_1q2owev": {
+                        "element_id": "Event_1q2owev"
+                    }
+                }
+            },
+            "Lane_1xm626k": {
+                "name": "Tai Long",
+                "elements": {
+                    "Activity_1c6aadl": {
+                        "element_id": "Activity_1c6aadl"
+                    },
+                    "Activity_1naavr8": {
+                        "element_id": "Activity_1naavr8"
+                    },
+                    "Event_1j2p7ua": {
+                        "element_id": "Event_1j2p7ua"
+                    }
+                }
+            }
+        },
+        "events": {
+            "StartEvent_1jljh4d": {
+                "id": "StartEvent_1jljh4d",
+                "name": "Movie start",
+                "type": "startEvent",
+                "lane": "Lane_00aaag5",
+                "incoming": [],
+                "outgoing": [
+                    {
+                        "element_id": "Activity_0nvxiwo",
+                        "name": ""
+                    }
+                ]
+            },
+            "Event_1j2p7ua": {
+                "id": "Event_1j2p7ua",
+                "name": "Movie end 1",
+                "type": "endEvent",
+                "lane": "Lane_1xm626k",
+                "incoming": [
+                    {
+                        "element_id": "Activity_1naavr8",
+                        "name": ""
+                    }
+                ],
+                "outgoing": []
+            },
+            "Event_1q2owev": {
+                "id": "Event_1q2owev",
+                "name": "Movie end 2",
+                "type": "endEvent",
+                "lane": "Lane_00aaag5",
+                "incoming": [
+                    {
+                        "element_id": "Activity_0xz4zs6",
+                        "name": ""
+                    }
+                ],
+                "outgoing": []
+            }
+        },
+        "activities": {
+            "Activity_0nvxiwo": {
+                "id": "Activity_0nvxiwo",
+                "name": "Adopt puppy",
+                "type": "task",
+                "lane": "Lane_00aaag5",
+                "incoming": [
+                    {
+                        "element_id": "StartEvent_1jljh4d",
+                        "name": ""
+                    }
+                ],
+                "outgoing": [
+                    {
+                        "element_id": "Gateway_18bgn17",
+                        "name": ""
+                    }
+                ]
+            },
+            "Activity_1c6aadl": {
+                "id": "Activity_1c6aadl",
+                "name": "Train hardly",
+                "type": "task",
+                "lane": "Lane_1xm626k",
+                "incoming": [
+                    {
+                        "element_id": "Gateway_18bgn17",
+                        "name": ""
+                    }
+                ],
+                "outgoing": [
+                    {
+                        "element_id": "Gateway_0ct7sfa",
+                        "name": ""
+                    }
+                ]
+            },
+            "Activity_0ijoabm": {
+                "id": "Activity_0ijoabm",
+                "name": "Teach all techniques",
+                "type": "task",
+                "lane": "Lane_00aaag5",
+                "incoming": [
+                    {
+                        "element_id": "Gateway_18bgn17",
+                        "name": ""
+                    }
+                ],
+                "outgoing": [
+                    {
+                        "element_id": "Gateway_0ct7sfa",
+                        "name": ""
+                    }
+                ]
+            },
+            "Activity_1naavr8": {
+                "id": "Activity_1naavr8",
+                "name": "Become dragon warrior",
+                "type": "task",
+                "lane": "Lane_1xm626k",
+                "incoming": [
+                    {
+                        "element_id": "Gateway_1cr0fsh",
+                        "name": "Is worthy"
+                    }
+                ],
+                "outgoing": [
+                    {
+                        "element_id": "Event_1j2p7ua",
+                        "name": ""
+                    }
+                ]
+            },
+            "Activity_0xz4zs6": {
+                "id": "Activity_0xz4zs6",
+                "name": "Search another dragon warrior",
+                "type": "task",
+                "lane": "Lane_00aaag5",
+                "incoming": [
+                    {
+                        "element_id": "Gateway_1cr0fsh",
+                        "name": "Is not worthy"
+                    }
+                ],
+                "outgoing": [
+                    {
+                        "element_id": "Event_1q2owev",
+                        "name": ""
+                    }
+                ]
+            }
+        },
+        "gateways": {
+            "Gateway_18bgn17": {
+                "id": "Gateway_18bgn17",
+                "name": "Parallel split",
+                "type": "parallelGateway",
+                "lane": "Lane_00aaag5",
+                "incoming": [
+                    {
+                        "element_id": "Activity_0nvxiwo",
+                        "name": ""
+                    }
+                ],
+                "outgoing": [
+                    {
+                        "element_id": "Activity_1c6aadl",
+                        "name": ""
+                    },
+                    {
+                        "element_id": "Activity_0ijoabm",
+                        "name": ""
+                    }
+                ]
+            },
+            "Gateway_0ct7sfa": {
+                "id": "Gateway_0ct7sfa",
+                "name": "Parallel join",
+                "type": "parallelGateway",
+                "lane": "Lane_00aaag5",
+                "incoming": [
+                    {
+                        "element_id": "Activity_0ijoabm",
+                        "name": ""
+                    },
+                    {
+                        "element_id": "Activity_1c6aadl",
+                        "name": ""
+                    }
+                ],
+                "outgoing": [
+                    {
+                        "element_id": "Gateway_1cr0fsh",
+                        "name": ""
+                    }
+                ]
+            },
+            "Gateway_1cr0fsh": {
+                "id": "Gateway_1cr0fsh",
+                "name": "Check dragon warrior",
+                "type": "exclusiveGateway",
+                "lane": "Lane_112xjbx",
+                "incoming": [
+                    {
+                        "element_id": "Gateway_0ct7sfa",
+                        "name": ""
+                    }
+                ],
+                "outgoing": [
+                    {
+                        "element_id": "Activity_1naavr8",
+                        "name": "Is worthy"
+                    },
+                    {
+                        "element_id": "Activity_0xz4zs6",
+                        "name": "Is not worthy"
+                    }
+                ]
+            }
+        }
+    },
+    "errors": [],
+    "warnings": []
+}

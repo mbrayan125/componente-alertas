@@ -1,0 +1,223 @@
+{
+    "success": true,
+    "data": {
+        "lanes": {
+            "Lane_1sfxhm2": {
+                "name": "Usuario 2",
+                "elements": {
+                    "Gateway_0bkid1c": {
+                        "element_id": "Gateway_0bkid1c"
+                    },
+                    "Event_0zptuig": {
+                        "element_id": "Event_0zptuig"
+                    },
+                    "Activity_1rli0xn": {
+                        "element_id": "Activity_1rli0xn"
+                    },
+                    "Activity_0fkngf6": {
+                        "element_id": "Activity_0fkngf6"
+                    },
+                    "Event_0kl9lnl": {
+                        "element_id": "Event_0kl9lnl"
+                    }
+                }
+            },
+            "Lane_1y9ntlq": {
+                "name": "Usuario 1",
+                "elements": {
+                    "StartEvent_1mkovn1": {
+                        "element_id": "StartEvent_1mkovn1"
+                    },
+                    "Gateway_188arsl": {
+                        "element_id": "Gateway_188arsl"
+                    },
+                    "Event_0rtnzq4": {
+                        "element_id": "Event_0rtnzq4"
+                    },
+                    "Activity_12sdyji": {
+                        "element_id": "Activity_12sdyji"
+                    },
+                    "Activity_1tf3qaa": {
+                        "element_id": "Activity_1tf3qaa"
+                    }
+                }
+            }
+        },
+        "events": {
+            "StartEvent_1mkovn1": {
+                "id": "StartEvent_1mkovn1",
+                "name": "Evento inicio",
+                "type": "startEvent",
+                "lane": "Lane_1y9ntlq",
+                "incoming": [],
+                "outgoing": [
+                    {
+                        "element_id": "Activity_12sdyji",
+                        "name": ""
+                    }
+                ]
+            },
+            "Event_0rtnzq4": {
+                "id": "Event_0rtnzq4",
+                "name": "Evento fin 1",
+                "type": "endEvent",
+                "lane": "Lane_1y9ntlq",
+                "incoming": [
+                    {
+                        "element_id": "Activity_1tf3qaa",
+                        "name": ""
+                    }
+                ],
+                "outgoing": []
+            },
+            "Event_0zptuig": {
+                "id": "Event_0zptuig",
+                "name": "Evento fin 3",
+                "type": "endEvent",
+                "lane": "Lane_1sfxhm2",
+                "incoming": [
+                    {
+                        "element_id": "Gateway_0bkid1c",
+                        "name": "Opci\u00f3n 2"
+                    }
+                ],
+                "outgoing": []
+            },
+            "Event_0kl9lnl": {
+                "id": "Event_0kl9lnl",
+                "name": "Evento fin 2",
+                "type": "endEvent",
+                "lane": "Lane_1sfxhm2",
+                "incoming": [
+                    {
+                        "element_id": "Activity_0fkngf6",
+                        "name": ""
+                    }
+                ],
+                "outgoing": []
+            }
+        },
+        "activities": {
+            "Activity_12sdyji": {
+                "id": "Activity_12sdyji",
+                "name": "Actividad 1",
+                "type": "task",
+                "lane": "Lane_1y9ntlq",
+                "incoming": [
+                    {
+                        "element_id": "StartEvent_1mkovn1",
+                        "name": ""
+                    }
+                ],
+                "outgoing": [
+                    {
+                        "element_id": "Gateway_188arsl",
+                        "name": ""
+                    }
+                ]
+            },
+            "Activity_1rli0xn": {
+                "id": "Activity_1rli0xn",
+                "name": "Actividad 3",
+                "type": "task",
+                "lane": "Lane_1sfxhm2",
+                "incoming": [
+                    {
+                        "element_id": "Gateway_188arsl",
+                        "name": "Opcion 2"
+                    }
+                ],
+                "outgoing": [
+                    {
+                        "element_id": "Gateway_0bkid1c",
+                        "name": ""
+                    }
+                ]
+            },
+            "Activity_1tf3qaa": {
+                "id": "Activity_1tf3qaa",
+                "name": "Actividad 2",
+                "type": "task",
+                "lane": "Lane_1y9ntlq",
+                "incoming": [
+                    {
+                        "element_id": "Gateway_188arsl",
+                        "name": "Opcion 1"
+                    }
+                ],
+                "outgoing": [
+                    {
+                        "element_id": "Event_0rtnzq4",
+                        "name": ""
+                    }
+                ]
+            },
+            "Activity_0fkngf6": {
+                "id": "Activity_0fkngf6",
+                "name": "Actividad 4",
+                "type": "task",
+                "lane": "Lane_1sfxhm2",
+                "incoming": [
+                    {
+                        "element_id": "Gateway_0bkid1c",
+                        "name": "Opci\u00f3n 1"
+                    }
+                ],
+                "outgoing": [
+                    {
+                        "element_id": "Event_0kl9lnl",
+                        "name": ""
+                    }
+                ]
+            }
+        },
+        "gateways": {
+            "Gateway_188arsl": {
+                "id": "Gateway_188arsl",
+                "name": "Gateway 1",
+                "type": "exclusiveGateway",
+                "lane": "Lane_1y9ntlq",
+                "incoming": [
+                    {
+                        "element_id": "Activity_12sdyji",
+                        "name": ""
+                    }
+                ],
+                "outgoing": [
+                    {
+                        "element_id": "Activity_1tf3qaa",
+                        "name": "Opcion 1"
+                    },
+                    {
+                        "element_id": "Activity_1rli0xn",
+                        "name": "Opcion 2"
+                    }
+                ]
+            },
+            "Gateway_0bkid1c": {
+                "id": "Gateway_0bkid1c",
+                "name": "Gateway 2",
+                "type": "exclusiveGateway",
+                "lane": "Lane_1sfxhm2",
+                "incoming": [
+                    {
+                        "element_id": "Activity_1rli0xn",
+                        "name": ""
+                    }
+                ],
+                "outgoing": [
+                    {
+                        "element_id": "Activity_0fkngf6",
+                        "name": "Opci\u00f3n 1"
+                    },
+                    {
+                        "element_id": "Event_0zptuig",
+                        "name": "Opci\u00f3n 2"
+                    }
+                ]
+            }
+        }
+    },
+    "errors": [],
+    "warnings": []
+}

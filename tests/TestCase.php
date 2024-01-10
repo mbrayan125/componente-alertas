@@ -2,10 +2,13 @@
 
 namespace Tests;
 
+use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {
+    use DatabaseMigrations;
+
     /**
      * Creates the application.
      *
@@ -14,6 +17,22 @@ abstract class TestCase extends BaseTestCase
     public function createApplication()
     {
         return require __DIR__.'/../bootstrap/app.php';
+    }
+
+    /**
+     * Asserts that an array contains the expected values.
+     *
+     * @param array $expected The expected values.
+     * @param array $actual The actual array to check.
+     * 
+     * @return void
+     */
+    protected function assertArrayContains(array $expected, array $actual): void
+    {
+        foreach ($expected as $key => $value) {
+            $this->assertArrayHasKey($key, $actual, sprintf('Error asserting that the key "%s" exists in the array.', $key));
+            $this->assertEquals($value, $actual[$key], sprintf('Error asserting that the key "%s" has the value "%s".', $key, $value));
+        }
     }
 
     /**

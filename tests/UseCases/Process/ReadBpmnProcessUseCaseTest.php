@@ -8,7 +8,7 @@ use Tests\TestCase;
 
 class ReadBpmnProcessUseCaseTest extends TestCase
 {
-    private $useCase;
+    private ReadBpmnProcessUseCaseInterface $useCase;
 
     /**
      * @inheritDoc

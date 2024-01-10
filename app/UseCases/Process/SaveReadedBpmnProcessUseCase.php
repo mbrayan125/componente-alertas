@@ -13,7 +13,6 @@ use App\UseCases\Models\Contracts\CreateProcessElementUseCaseInterface;
 use App\UseCases\Models\Contracts\CreateProcessUseCaseInterface;
 use App\UseCases\Models\Contracts\CreateUserRoleUseCaseInterface;
 use App\UseCases\Process\Contracts\SaveReadedBpmnProcessUseCaseInterface;
-use Illuminate\Support\Facades\DB;
 
 class SaveReadedBpmnProcessUseCase implements SaveReadedBpmnProcessUseCaseInterface
 {
@@ -167,14 +166,11 @@ class SaveReadedBpmnProcessUseCase implements SaveReadedBpmnProcessUseCaseInterf
             $targetElement = $this->createdElements[$elementId];
             foreach ($relationsInfo['incoming'] as $incomingElementInfo) {
                 $incomingElement = $this->createdElements[$incomingElementInfo['element_id']];
-                $targetElement->incomingElements()->attach($incomingElement, [
-                    'direction' => 'input',
-                    'name'      => $incomingElementInfo['name']
-                ]);
+                $targetElement->addIncoming($incomingElement, $incomingElementInfo['name']);
             }
             foreach ($relationsInfo['outgoing'] as $outgointElementInfo) {
                 $outgoingElement = $this->createdElements[$outgointElementInfo['element_id']];
-                $targetElement->incomingElements()->attach($outgoingElement, [
+                $targetElement->outgoingElements()->attach($outgoingElement, [
                     'direction' => 'output',
                     'name'      => $outgointElementInfo['name']
                 ]);
