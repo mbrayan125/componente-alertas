@@ -2,7 +2,7 @@
 
 namespace App\UseCases\Models\Contracts;
 
-interface CreateTargetSystemUseCaseInterface extends CreateModelUseCaseInterface
+interface CreateTargetSystemUseCaseInterface extends CreateUpdateModelUseCaseInterface
 {
 
 }

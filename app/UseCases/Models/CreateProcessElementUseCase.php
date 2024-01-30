@@ -6,12 +6,12 @@ use App\Models\Abstracts\AbstractModel;
 use App\Models\ProcessElement;
 use App\Repositories\Contracts\ModelRepositoryInterface;
 use App\Repositories\Contracts\ProcessElementRepositoryInterface;
-use App\UseCases\Models\Abstracts\CreateModelAbstractUseCase;
+use App\UseCases\Models\Abstracts\CreateUpdateModelAbstractUseCase;
 use App\UseCases\Models\Contracts\CreateProcessElementUseCaseInterface;
 use App\UseCases\ModelValidators\Contracts\ModelAttributesValidatorUseCaseInterface;
 use App\UseCases\ModelValidators\Contracts\ProcessElementAttributesValidatorUseCaseInterface;
 
-class CreateProcessElementUseCase extends CreateModelAbstractUseCase implements CreateProcessElementUseCaseInterface
+class CreateProcessElementUseCase extends CreateUpdateModelAbstractUseCase implements CreateProcessElementUseCaseInterface
 {
     public function __construct(
         private readonly ProcessElementRepositoryInterface $processElementRepository,

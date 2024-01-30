@@ -22,3 +22,6 @@ $router->get('/targetsystem', 'GetTargetSystemController');
 
 $router->post('/process', 'CreateProcessController');
 $router->get('/process', 'GetProcessController');
+
+$router->post('/instance', 'CreateInstanceController');
+$router->get('/instance', 'GetInstanceController');

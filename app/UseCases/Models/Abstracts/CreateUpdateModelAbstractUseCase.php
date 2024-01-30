@@ -6,24 +6,24 @@ use App\Exceptions\Model\IncorrectAttributesException;
 use App\Exceptions\Model\ModelValidationException;
 use App\Models\Abstracts\AbstractModel;
 use App\Repositories\Contracts\ModelRepositoryInterface;
-use App\UseCases\Models\Contracts\CreateModelUseCaseInterface;
+use App\UseCases\Models\Contracts\CreateUpdateModelUseCaseInterface;
 use App\UseCases\ModelValidators\Contracts\ModelAttributesValidatorUseCaseInterface;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
-abstract class CreateModelAbstractUseCase implements CreateModelUseCaseInterface
+abstract class CreateUpdateModelAbstractUseCase implements CreateUpdateModelUseCaseInterface
 {
     /**
      * @inheritDoc
      */
-    public function __invoke(array $attributes): AbstractModel
+    public function __invoke(array $attributes, AbstractModel $current = null): AbstractModel
     {
         DB::beginTransaction();
         try {
             // Attributes validation
-            $newInstance = $this->createInstance();
-            $validation = ($this->getModelAttributesValidator())($attributes, $newInstance);
+            $modelInstance = $current ?? $this->createInstance();
+            $validation = ($this->getModelAttributesValidator())($attributes, $modelInstance);
             if (!$validation->success) {
                 throw new IncorrectAttributesException(
                     $this->getModelAttributesValidator()->getModelName(), 
@@ -37,28 +37,28 @@ abstract class CreateModelAbstractUseCase implements CreateModelUseCaseInterface
             $extraData = $this->determineExtraData($attributes, $preparedAttributes);
 
             // Create the new instance with actions
-            $this->preFillActions($newInstance, $preparedAttributes, $extraData);
-            $newInstance->fillData($preparedAttributes);
-            $this->postFillActions($newInstance, $preparedAttributes, $extraData);
+            $this->preFillActions($modelInstance, $preparedAttributes, $extraData);
+            $modelInstance->fillData($preparedAttributes);
+            $this->postFillActions($modelInstance, $preparedAttributes, $extraData);
 
             // Save the new instance with actions
-            $this->getModelRepository()->save($newInstance);
-            $this->postSaveActions($newInstance, $preparedAttributes, $extraData);
-            $this->getModelRepository()->save($newInstance);
+            $this->getModelRepository()->save($modelInstance);
+            $this->postSaveActions($modelInstance, $preparedAttributes, $extraData);
+            $this->getModelRepository()->save($modelInstance);
             DB::commit();
 
         } catch (Throwable $exception) {
 
             // Rollback the transaction
             DB::rollBack();
-            $this->handleRollback($newInstance, $exception);
+            $this->handleRollback($modelInstance, $exception);
             if ($exception instanceof ModelValidationException) {                
                 throw $exception;
             }
             throw new Exception('Error desconocido al crear el modelo', 0, $exception);
         }
 
-        return $newInstance;
+        return $modelInstance;
     }
 
     /**
@@ -85,37 +85,37 @@ abstract class CreateModelAbstractUseCase implements CreateModelUseCaseInterface
     /**
      * Pre-fills the actions for creating a new instance of the AbstractModel.
      *
-     * @param AbstractModel $newInstance The new instance of the AbstractModel.
+     * @param AbstractModel $modelInstance The new instance of the AbstractModel.
      * @param array $attributes The attributes to be filled in the new instance.
      * @param array $extraData Additional data to be used for pre-filling actions.
      * 
      * @return void
      */
-    protected function preFillActions(AbstractModel &$newInstance, array &$attributes, array &$extraData): void
+    protected function preFillActions(AbstractModel &$modelInstance, array &$attributes, array &$extraData): void
     { }
 
     /**
      * Performs post-fill actions on a newly created model instance.
      *
-     * @param AbstractModel $newInstance The newly created model instance.
+     * @param AbstractModel $modelInstance The newly created model instance.
      * @param array $attributes The attributes used to create the model.
      * @param array $extraData Additional data for post-fill actions.
      * 
      * @return void
      */
-    protected function postFillActions(AbstractModel &$newInstance, array &$attributes, array &$extraData): void
+    protected function postFillActions(AbstractModel &$modelInstance, array &$attributes, array &$extraData): void
     { }
 
     /**
      * Performs post-save actions after creating a new instance of AbstractModel.
      *
-     * @param AbstractModel $newInstance The newly created instance of AbstractModel.
+     * @param AbstractModel $modelInstance The newly created instance of AbstractModel.
      * @param array $attributes The attributes used to create the instance.
      * @param array $extraData Additional data for post-save actions.
      * 
      * @return void
      */
-    protected function postSaveActions(AbstractModel &$newInstance, array &$attributes, array &$extraData): void
+    protected function postSaveActions(AbstractModel &$modelInstance, array &$attributes, array &$extraData): void
     { }
 
     /**
@@ -124,7 +124,7 @@ abstract class CreateModelAbstractUseCase implements CreateModelUseCaseInterface
      * @param Throwable $ex The exception that occurred.
      * @return void
      */
-    protected function handleRollback(AbstractModel $newInstance, Throwable $ex): void
+    protected function handleRollback(AbstractModel $modelInstance, Throwable $ex): void
     { }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\UseCases\ModelValidators;
 
+use App\DataTransferObjects\ModelValidators\AttributesValidatorDTO as Attribute;
 use App\Repositories\Contracts\ModelRepositoryInterface;
 use App\Repositories\Contracts\ProcessInstanceRepositoryInterface;
 use App\UseCases\ModelValidators\Abstracts\ModelAttributesValidatorAbstractUseCase as Validator;
@@ -16,7 +17,8 @@ class ProcessInstanceAttributesValidatorUseCase extends Validator implements Pro
     protected function getAttributesConfig(): array
     {
         return [
-            
+            'target_system_id' => Attribute::integer()->required(),
+            'process_id'       => Attribute::integer()->required(),
         ];
     }
 

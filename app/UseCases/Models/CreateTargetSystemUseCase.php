@@ -7,12 +7,12 @@ use App\Models\TargetSystem;
 use App\Repositories\Contracts\ModelRepositoryInterface;
 use App\Repositories\Contracts\TargetSystemRepositoryInterface;
 use App\Traits\Model\GenerateTokenTrait;
-use App\UseCases\Models\Abstracts\CreateModelAbstractUseCase;
+use App\UseCases\Models\Abstracts\CreateUpdateModelAbstractUseCase;
 use App\UseCases\Models\Contracts\CreateTargetSystemUseCaseInterface;
 use App\UseCases\ModelValidators\Contracts\ModelAttributesValidatorUseCaseInterface;
 use App\UseCases\ModelValidators\Contracts\TargetSystemAttributesValidatorUseCaseInterface;
 
-class CreateTargetSystemUseCase extends CreateModelAbstractUseCase implements CreateTargetSystemUseCaseInterface
+class CreateTargetSystemUseCase extends CreateUpdateModelAbstractUseCase implements CreateTargetSystemUseCaseInterface
 {
     use GenerateTokenTrait;
 
@@ -53,8 +53,10 @@ class CreateTargetSystemUseCase extends CreateModelAbstractUseCase implements Cr
     /**
      * @inheritDoc
      */
-    protected function preFillActions(AbstractModel &$newInstance, array &$attributes, array &$extraData): void
+    protected function preFillActions(AbstractModel &$modelInstance, array &$attributes, array &$extraData): void
     {
-        $newInstance->token = $this->generateToken();
+        if (!$modelInstance->token){
+            $modelInstance->token = $this->generateToken();
+        }
     }
 }

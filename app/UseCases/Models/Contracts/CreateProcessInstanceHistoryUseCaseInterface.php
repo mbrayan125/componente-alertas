@@ -2,7 +2,7 @@
 
 namespace App\UseCases\Models\Contracts;
 
-interface CreateProcessInstanceHistoryUseCaseInterface extends CreateModelUseCaseInterface
+interface CreateProcessInstanceHistoryUseCaseInterface extends CreateUpdateModelUseCaseInterface
 {
 
 }
