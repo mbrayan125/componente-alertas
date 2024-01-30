@@ -3,9 +3,9 @@
 namespace App\UseCases\Process\Contracts;
 
 use App\DataResultObjects\Process\ReadBpmnUseCaseDRO;
-use App\Models\TargetSystem;
+use App\Models\Process;
 
 interface SaveReadedBpmnProcessUseCaseInterface
 {
-    public function __invoke(ReadBpmnUseCaseDRO $readedProcess, TargetSystem $targetSystem): void;
+    public function __invoke(ReadBpmnUseCaseDRO $readedProcess, Process $newProcess): void;
 }

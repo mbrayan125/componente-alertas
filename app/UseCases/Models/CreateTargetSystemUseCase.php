@@ -11,10 +11,6 @@ use App\UseCases\Models\Abstracts\CreateModelAbstractUseCase;
 use App\UseCases\Models\Contracts\CreateTargetSystemUseCaseInterface;
 use App\UseCases\ModelValidators\Contracts\ModelAttributesValidatorUseCaseInterface;
 use App\UseCases\ModelValidators\Contracts\TargetSystemAttributesValidatorUseCaseInterface;
-use App\UseCases\Process\Contracts\ReadBpmnProcessUseCaseInterface;
-use App\UseCases\Process\Contracts\SaveReadedBpmnProcessUseCaseInterface;
-use App\UseCases\Files\Contracts\MoveFileUseCaseInterface;
-use App\UseCases\Files\Contracts\RemoveFileUseCaseInterface;
 
 class CreateTargetSystemUseCase extends CreateModelAbstractUseCase implements CreateTargetSystemUseCaseInterface
 {
@@ -26,10 +22,6 @@ class CreateTargetSystemUseCase extends CreateModelAbstractUseCase implements Cr
      * Represents a use case for creating a target system.
      */
     public function __construct(
-        private readonly MoveFileUseCaseInterface $moveFileUseCase,
-        private readonly ReadBpmnProcessUseCaseInterface $readBpmnProcess,
-        private readonly RemoveFileUseCaseInterface $removeFileUseCase,
-        private readonly SaveReadedBpmnProcessUseCaseInterface $saveReadedBpmnProcess,
         private readonly TargetSystemRepositoryInterface $targetSystemRepository,
         private readonly TargetSystemAttributesValidatorUseCaseInterface $targetSystemAttributesValidator
     ) { }

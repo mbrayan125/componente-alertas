@@ -5,12 +5,10 @@ namespace App\UseCases\Process;
 use App\DataResultObjects\Process\Composed\ReadBpmnUseCaseDRO as ComposedReadBpmnUseCaseDRO;
 use App\DataResultObjects\Process\ReadBpmnUseCaseDRO;
 use App\Models\Process;
-use App\Models\TargetSystem;
 use App\Repositories\Contracts\ProcessElementRepositoryInterface;
 use App\Repositories\Contracts\ProcessRepositoryInterface;
 use App\Traits\Process\ElementsTypesConstantsTrait;
 use App\UseCases\Models\Contracts\CreateProcessElementUseCaseInterface;
-use App\UseCases\Models\Contracts\CreateProcessUseCaseInterface;
 use App\UseCases\Models\Contracts\CreateUserRoleUseCaseInterface;
 use App\UseCases\Process\Contracts\SaveReadedBpmnProcessUseCaseInterface;
 
@@ -25,7 +23,6 @@ class SaveReadedBpmnProcessUseCase implements SaveReadedBpmnProcessUseCaseInterf
     private array $processElementsRelations = [];
 
     public function __construct(
-        private readonly CreateProcessUseCaseInterface $createProcessUseCase,
         private readonly CreateProcessElementUseCaseInterface $createProcessElementUseCase,
         private readonly CreateUserRoleUseCaseInterface $createUserRoleUseCase,
         private readonly ProcessRepositoryInterface $processRepository,
@@ -35,15 +32,9 @@ class SaveReadedBpmnProcessUseCase implements SaveReadedBpmnProcessUseCaseInterf
     /**
      * @inheritDoc
      */
-    public function __invoke(ReadBpmnUseCaseDRO $readedProcess, TargetSystem $targetSystem): void
+    public function __invoke(ReadBpmnUseCaseDRO $readedProcess, Process $newProcess): void
     {
-        $currentProcess = $this->processRepository->findOneBy([ 'target_system_id' => $targetSystem->id ], [ 'id' => 'DESC' ]);
-        $nextProcessVersion = $currentProcess ? $currentProcess->version + 1 : 1;
-        
-        $this->createdProcess = ($this->createProcessUseCase)([
-            'target_system_id' => $targetSystem->id,
-            'version'          => $nextProcessVersion
-        ]);
+        $this->createdProcess = $newProcess;
         $this->processInfo = $readedProcess->data;
 
         $this->loadUserRoles();
@@ -85,6 +76,7 @@ class SaveReadedBpmnProcessUseCase implements SaveReadedBpmnProcessUseCaseInterf
             $createdEvent = ($this->createProcessElementUseCase)([
                 'process_id'   => $this->createdProcess->id,
                 'user_role_id' => $userRoleObject,
+                'bpmn_id'      => $elementId,
                 'name'         => $event['name'],
                 'type'         => self::EVENT,
                 'subtype'      => $event['type']
@@ -112,6 +104,7 @@ class SaveReadedBpmnProcessUseCase implements SaveReadedBpmnProcessUseCaseInterf
             $createdGateway = ($this->createProcessElementUseCase)([
                 'process_id'   => $this->createdProcess->id,
                 'user_role_id' => $userRoleObject,
+                'bpmn_id'      => $elementId,
                 'name'         => $gateway['name'],
                 'type'         => self::GATEWAY,
                 'subtype'      => $gateway['type']
@@ -141,6 +134,7 @@ class SaveReadedBpmnProcessUseCase implements SaveReadedBpmnProcessUseCaseInterf
             $createdActivity = ($this->createProcessElementUseCase)([
                 'process_id'   => $this->createdProcess->id,
                 'user_role_id' => $userRoleObject,
+                'bpmn_id'      => $elementId,
                 'name'         => $activity['name'],
                 'type'         => self::ACTIVITY,
                 'subtype'      => $activity['type']

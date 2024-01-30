@@ -19,3 +19,6 @@ $router->get('/', function () use ($router) {
 
 $router->post('/targetsystem', 'CreateTargetSystemController');
 $router->get('/targetsystem', 'GetTargetSystemController');
+
+$router->post('/process', 'CreateProcessController');
+$router->get('/process', 'GetProcessController');

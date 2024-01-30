@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\Model\ModelNotFoundException;
 use App\Http\Controllers\Abstracts\AbstractController;
+use App\Repositories\Contracts\ProcessRepositoryInterface;
 use App\Repositories\Contracts\TargetSystemRepositoryInterface;
 use App\Traits\Controller\RestrictionsValidationTrait;
 use App\Traits\Response\ResponseConstantsTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class GetTargetSystemController extends AbstractController
+class GetProcessController extends AbstractController
 {
     use RestrictionsValidationTrait;
     use ResponseConstantsTrait;
@@ -26,6 +27,7 @@ class GetTargetSystemController extends AbstractController
      */
     public function __invoke(
         TargetSystemRepositoryInterface $targetSystemRepository,
+        ProcessRepositoryInterface $processRepository,
         Request $request
     ): JsonResponse {
         // Retrieve the token from the request parameters
@@ -34,20 +36,19 @@ class GetTargetSystemController extends AbstractController
             [
                 'target_system_token' => [
                     self::RESTRICTION_REQUIRED => true
+                ],
+                'process_token' => [
+                    self::RESTRICTION_REQUIRED => true
                 ]
             ]
         );
-        
+
         $targetSystem = $targetSystemRepository->findByToken($params['target_system_token']);
+        $process = $processRepository->findByTargetSystemAndToken($targetSystem, $params['process_token']);
         return $this->jsonSuccessResult(
             self::HTTP_OK,
-            sprintf('Datos sobre %s', $targetSystem->name),
-            [
-                'name'                => $targetSystem->name,
-                'target_system_token' => $targetSystem->token,
-                'created_at'          => $targetSystem->created_at,
-                'processes'           => []
-            ]
+            sprintf('Datos sobre proceso %s', $process->getFullName()),
+            $process->getPublicMapeableData()
         );
     }
 }

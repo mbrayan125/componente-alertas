@@ -20,6 +20,7 @@ class ProcessElementAttributesValidatorUseCase extends Validator implements Proc
         return [
             'process_id'   => Attribute::integer()->required()->minValue(1),
             'user_role_id' => Attribute::integer()->required()->minValue(1),
+            'bpmn_id'      => Attribute::string(),
             'name'         => Attribute::string()->maxLength(255),
             'type'         => Attribute::string()->inValues(ProcessElement::getAllElementsTypes()),
             'subtype'      => Attribute::string()

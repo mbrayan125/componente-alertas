@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('process_id');
             $table->unsignedBigInteger('user_role_id');
+            $table->string('bpmn_id');
             $table->string('name');
             $table->string('type');
             $table->string('subtype')->nullable();

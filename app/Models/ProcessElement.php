@@ -3,15 +3,17 @@
 namespace App\Models;
 
 use App\Models\Abstracts\AbstractModel;
+use App\Models\Contracts\ModelPublicMapeableInterface;
 use App\Traits\Process\ElementsTypesConstantsTrait;
 
-class ProcessElement extends AbstractModel
+class ProcessElement extends AbstractModel implements ModelPublicMapeableInterface
 {
     use ElementsTypesConstantsTrait;
 
     protected $fillable = [
         'process_id',
         'user_role_id',
+        'bpmn_id',
         'name',
         'type',
         'subtype'
@@ -72,6 +74,16 @@ class ProcessElement extends AbstractModel
             self::EVENT,
             self::ACTIVITY,
             self::GATEWAY
+        ];
+    }
+
+    public function getPublicMapeableData(): array
+    {
+        return [
+            'id'            => $this->bpmn_id,
+            'name'          => $this->name,
+            'type'          => $this->type,
+            'subtype'       => $this->subtype
         ];
     }
 }
