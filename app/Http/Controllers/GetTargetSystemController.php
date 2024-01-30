@@ -1,0 +1,60 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Exceptions\Model\ModelNotFoundException;
+use App\Http\Controllers\Abstracts\AbstractController;
+use App\Repositories\Contracts\TargetSystemRepositoryInterface;
+use App\Traits\Controller\RestrictionsValidationTrait;
+use App\Traits\Response\ResponseConstantsTrait;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+
+class GetTargetSystemController extends AbstractController
+{
+    use RestrictionsValidationTrait;
+    use ResponseConstantsTrait;
+
+    /**
+     * Retrieves information about a target system based on the provided token.
+     *
+     * @param TargetSystemRepositoryInterface $targetSystemRepository The repository for target systems.
+     * @param Request $request The HTTP request object.
+     * 
+     * @return JsonResponse The JSON response containing the target system information.
+     * @throws ModelNotFoundException If the target system with the given token is not found.
+     */
+    public function __invoke(
+        TargetSystemRepositoryInterface $targetSystemRepository,
+        Request $request
+    ): JsonResponse {
+        // Retrieve the token from the request parameters
+        $params = $this->getParamsFromRequest(
+            $request,
+            [
+                'target_system_token' => [
+                    self::RESTRICTION_REQUIRED => true
+                ]
+            ]
+        );
+        $token = $params['target_system_token'];
+
+        // Search for the target system using the token
+        $searchParams = ['token' => $token];
+        if (!$targetSystem = $targetSystemRepository->findOneBy($searchParams)) {
+            throw new ModelNotFoundException('sistema objetivo', $searchParams);
+        }
+
+        // Return the target system information as a JSON response
+        return $this->jsonSuccessResult(
+            self::HTTP_OK,
+            sprintf('Datos sobre %s', $targetSystem->name),
+            [
+                'name'                => $targetSystem->name,
+                'target_system_token' => $targetSystem->token,
+                'created_at'          => $targetSystem->created_at,
+                'processes'           => []
+            ]
+        );
+    }
+}

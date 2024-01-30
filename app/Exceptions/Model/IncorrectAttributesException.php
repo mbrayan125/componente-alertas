@@ -17,6 +17,6 @@ class IncorrectAttributesException extends ModelValidationException
         array $errors,
         array $warnings = [],
     ) {
-        parent::__construct(sprintf('Error en la validación de atributos para %s', $model), $errors, $warnings, self::HTTP_UNPROCESSABLE_ENTITY);
+        parent::__construct(sprintf('Datos para creación de %s inválidos', $model), $errors, $warnings, self::HTTP_UNPROCESSABLE_ENTITY);
     }
 }

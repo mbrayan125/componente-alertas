@@ -3,11 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Abstracts\AbstractController;
+use App\Traits\Controller\RestrictionsValidationTrait;
+use App\Traits\Response\ResponseConstantsTrait;
 use App\UseCases\Models\Contracts\CreateTargetSystemUseCaseInterface;
 use Illuminate\Http\Request;
 
 class CreateTargetSystemController extends AbstractController
 {
+    use RestrictionsValidationTrait;
+    use ResponseConstantsTrait;
+
     /**
      * Invokes the CreateTargetSystemController.
      *
@@ -22,16 +27,17 @@ class CreateTargetSystemController extends AbstractController
     ) {
         $creationRequestParams = $this->getParamsFromRequest(
             $request, 
-            ['name', 'nickname'], 
-            ['process_path']
+            [
+                'name' => [
+                    self::RESTRICTION_REQUIRED => true
+                ],
+            ]
         );
         $targetSystem = $createTargetSystem($creationRequestParams);
 
-        return $this->jsonSuccessResult('Sistema registrado correctamente', [
-            'id'       => $targetSystem->id,
-            'name'     => $targetSystem->name,
-            'nickname' => $targetSystem->nickname,
-            'process'  => $targetSystem->process_path
+        return $this->jsonSuccessResult(self::HTTP_CREATED, 'Se ha creado el sistema objetivo correctamente', [
+            'target_system_token' => $targetSystem->token,
+            'created_at'          => $targetSystem->created_at
         ]);
     }
 }

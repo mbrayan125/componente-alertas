@@ -8,7 +8,6 @@ class TargetSystem extends AbstractModel
 {
     protected $fillable = [
         'name',
-        'nickname',
-        'process_path'
+        'token'
     ];
 }

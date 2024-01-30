@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use App\Exceptions\General\DomainException;
+use App\Traits\Response\CreateResponsesTrait;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
@@ -12,6 +13,8 @@ use Throwable;
 
 class Handler extends ExceptionHandler
 {
+    use CreateResponsesTrait;
+
     /**
      * A list of the exception types that should not be reported.
      *
@@ -52,12 +55,25 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $exception)
     {
         if ($exception instanceof DomainException) {
-            return response()->json([
-                'code'     => $exception->httpCode,
-                'message'  => $exception->mainMessage,
-                'errors'   => $exception->errors,
-                'warnings' => $exception->warnings
-            ], $exception->httpCode);
+            return $this->jsonFailureResult(
+                $exception->httpCode,
+                $exception->mainMessage,
+                $exception->errors,
+                $exception->warnings
+            );
+        }
+
+
+        return parent::render($request, $exception);
+
+        if (env('APP_DEBUG')) {
+            return $this->jsonFailureResult(
+                500,
+                'Error desconocido',
+                [
+                    $exception->getMessage()
+                ]
+            );
         }
 
         return parent::render($request, $exception);

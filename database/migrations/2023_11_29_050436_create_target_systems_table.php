@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('target_systems', function (Blueprint $table) {
             $table->id();
             $table->string('name', 128);
-            $table->string('nickname', 12);
-            $table->text('process_path');
+            $table->string('token', 32);
             $table->timestamps();
         });
     }

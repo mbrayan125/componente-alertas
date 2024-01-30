@@ -25,9 +25,7 @@ class TargetSystemAttributesValidatorUseCase extends Validator implements Target
     protected function getAttributesConfig(): array
     {
         return [
-            'name'         => Attribute::string()->required()->maxLength(128),
-            'nickname'     => Attribute::string()->required()->minLength(12)->maxLength(12)->unique(),
-            'process_path' => Attribute::string()->required()
+            'name' => Attribute::string()->required()->maxLength(128)
         ];
     }
 

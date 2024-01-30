@@ -87,7 +87,7 @@ abstract class ModelAttributesValidatorAbstractUseCase implements ModelAttribute
             
             if ($valueSentIsNull || $valueMissing) {
                 $this->validationErrors[] = sprintf(
-                    'El atributo %s es requerido',
+                    'El parámetro %s es obligatorio',
                     $attribute
                 );
             }

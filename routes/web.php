@@ -17,4 +17,5 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-$router->post('/targetsystem/register', 'CreateTargetSystemController');
+$router->post('/targetsystem', 'CreateTargetSystemController');
+$router->get('/targetsystem', 'GetTargetSystemController');
