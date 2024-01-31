@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use App\Models\Abstracts\AbstractModel;
+use App\Models\Contracts\ModelPublicMapeableInterface;
 
-class ProcessInstanceHistory extends AbstractModel
+class ProcessInstanceHistory extends AbstractModel implements ModelPublicMapeableInterface
 {
+    protected $table = 'process_instances_history';
+
     protected $fillable = [
         'process_instance_id',
         'process_element_id',
@@ -25,5 +28,14 @@ class ProcessInstanceHistory extends AbstractModel
     public function historyPrevious()
     {
         return $this->belongsTo(ProcessInstanceHistory::class, 'history_previous_id');
+    }
+
+    public function getPublicMapeableData(): array
+    {
+        return [
+            'element_id'   => $this->processElement->bpmn_id,
+            'element_name' => $this->processElement->name,
+            'created_at'   => $this->created_at
+        ];
     }
 }

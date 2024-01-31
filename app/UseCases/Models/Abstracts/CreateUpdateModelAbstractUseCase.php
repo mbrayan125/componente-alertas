@@ -8,6 +8,7 @@ use App\Models\Abstracts\AbstractModel;
 use App\Repositories\Contracts\ModelRepositoryInterface;
 use App\UseCases\Models\Contracts\CreateUpdateModelUseCaseInterface;
 use App\UseCases\ModelValidators\Contracts\ModelAttributesValidatorUseCaseInterface;
+use DomainException;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Throwable;
@@ -52,10 +53,7 @@ abstract class CreateUpdateModelAbstractUseCase implements CreateUpdateModelUseC
             // Rollback the transaction
             DB::rollBack();
             $this->handleRollback($modelInstance, $exception);
-            if ($exception instanceof ModelValidationException) {                
-                throw $exception;
-            }
-            throw new Exception('Error desconocido al crear el modelo', 0, $exception);
+            throw $exception;
         }
 
         return $modelInstance;

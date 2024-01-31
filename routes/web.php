@@ -25,3 +25,4 @@ $router->get('/process', 'GetProcessController');
 
 $router->post('/instance', 'CreateInstanceController');
 $router->get('/instance', 'GetInstanceController');
+$router->put('/instance', 'UpdateInstanceController');

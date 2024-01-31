@@ -38,4 +38,27 @@ class ProcessElementDefaultRepository extends ModelRepositoryAbstract implements
 
         return $startEvent;
     }
+
+    /**
+     * Get a process element by its BPMN ID and process.
+     *
+     * @param Process $process The process object.
+     * @param string $bpmnId The BPMN ID of the process element.
+     * @return ProcessElement|null The process element if found, null otherwise.
+     * 
+     * @throws ModelNotFoundException If the process element is not found.
+     */
+    public function getByBpmnIdAndProcess(Process $process, string $bpmnId): ?ProcessElement
+    {
+        $searchParams = [
+            'process_id' => $process->id,
+            'bpmn_id'    => $bpmnId
+        ];
+
+        if (!$processElement = $this->findOneBy($searchParams)) {
+            throw new ModelNotFoundException('elemento de proceso', $searchParams);
+        }
+
+        return $processElement;
+    }
 }

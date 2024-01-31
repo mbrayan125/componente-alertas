@@ -15,12 +15,12 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('process_instance_id');
             $table->unsignedBigInteger('process_element_id');
-            $table->unsignedBigInteger('history_previous')->nullable();
+            $table->unsignedBigInteger('history_previous_id')->nullable();
             $table->timestamps();
 
             $table->foreign('process_instance_id')->on('process_instances')->references('id');
             $table->foreign('process_element_id')->on('process_elements')->references('id');
-            $table->foreign('history_previous')->on('process_instances_history')->references('id')->onDelete('set null');
+            $table->foreign('history_previous_id')->on('process_instances_history')->references('id')->onDelete('set null');
         });
     }
 

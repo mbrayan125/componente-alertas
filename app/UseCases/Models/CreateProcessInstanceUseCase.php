@@ -9,6 +9,7 @@ use App\Repositories\Contracts\ProcessElementRepositoryInterface;
 use App\Repositories\Contracts\ProcessInstanceRepositoryInterface;
 use App\Traits\Model\GenerateTokenTrait;
 use App\UseCases\Models\Abstracts\CreateUpdateModelAbstractUseCase;
+use App\UseCases\Models\Contracts\CreateProcessInstanceHistoryUseCaseInterface;
 use App\UseCases\Models\Contracts\CreateProcessInstanceUseCaseInterface;
 use App\UseCases\ModelValidators\Contracts\ModelAttributesValidatorUseCaseInterface;
 use App\UseCases\ModelValidators\Contracts\ProcessInstanceAttributesValidatorUseCaseInterface;
@@ -17,7 +18,11 @@ class CreateProcessInstanceUseCase extends CreateUpdateModelAbstractUseCase impl
 {
     use GenerateTokenTrait;
 
+    private bool $newProcessInstance = false;
+    private ?int $currentElementId = null;
+
     public function __construct(
+        private readonly CreateProcessInstanceHistoryUseCaseInterface $createProcessInstanceHistoryUseCase,
         private readonly ProcessElementRepositoryInterface $processElementRepository,
         private readonly ProcessInstanceRepositoryInterface $processInstanceRepository,
         private readonly ProcessInstanceAttributesValidatorUseCaseInterface $processInstanceAttributesValidator
@@ -40,6 +45,8 @@ class CreateProcessInstanceUseCase extends CreateUpdateModelAbstractUseCase impl
 
     protected function preFillActions(AbstractModel &$modelInstance, array &$attributes, array &$extraData): void
     {
+        $this->newProcessInstance = $modelInstance->id === null;
+        $this->currentElementId = $modelInstance->current_element_id;
         if (!$modelInstance->token){
             $modelInstance->token = $this->generateToken();
         }
@@ -48,7 +55,29 @@ class CreateProcessInstanceUseCase extends CreateUpdateModelAbstractUseCase impl
     protected function postFillActions(AbstractModel &$modelInstance, array &$attributes, array &$extraData): void
     {
         $process = $modelInstance->process;
-        $startProcess = $this->processElementRepository->getStartEventByProcess($process);
-        $modelInstance->current_element_id = $startProcess->id;
+        $selectedProcessElement = null;
+        if (!$this->currentElementId) {
+            $selectedProcessElement = $this->processElementRepository->getStartEventByProcess($process);
+        }
+
+        if ($nextElementId = $extraData['next_element_id'] ?? null) {
+            $selectedProcessElement = $this->processElementRepository->getByBpmnIdAndProcess($process, $nextElementId);
+            unset($extraData['next_element_id']);
+        }
+
+        if ($selectedProcessElement) {
+            $modelInstance->current_element_id = $selectedProcessElement->id;
+        }
+    }
+
+    protected function postSaveActions(AbstractModel &$modelInstance, array &$attributes, array &$extraData): void
+    {
+        if ($modelInstance->current_element_id !== $this->currentElementId) {
+            ($this->createProcessInstanceHistoryUseCase)([
+                'process_instance_id' => $modelInstance->id,
+                'process_element_id'  => $modelInstance->current_element_id,
+                'history_previous_id' => $this->currentElementId
+            ]);
+        }
     }
 }
