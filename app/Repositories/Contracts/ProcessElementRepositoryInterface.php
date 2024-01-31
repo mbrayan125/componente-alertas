@@ -25,4 +25,15 @@ interface ProcessElementRepositoryInterface extends ModelRepositoryInterface
      * @return ProcessElement|null The process element matching the BPMN ID and process, or null if not found.
      */
     public function getByBpmnIdAndProcess(Process $process, string $bpmnId): ?ProcessElement;
+
+
+    /**
+     * Retrieves elements by type and process.
+     *
+     * @param Process $process The process object.
+     * @param string $type The type of elements to retrieve.
+     * 
+     * @return ProcessElement[] The array of elements.
+     */
+    public function getElementsByTypeAndProcess(Process $process, string $type): array;
 }

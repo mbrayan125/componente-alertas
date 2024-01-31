@@ -33,6 +33,9 @@ class ProcessInstance extends AbstractModel implements ModelPublicMapeableInterf
         return $this->belongsTo(ProcessElement::class, 'current_element_id');
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getPublicMapeableData(): array
     {
         $instanceHistoryArray = [];

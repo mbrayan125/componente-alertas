@@ -13,6 +13,7 @@ use App\UseCases\Models\Contracts\CreateProcessInstanceHistoryUseCaseInterface;
 use App\UseCases\Models\Contracts\CreateProcessInstanceUseCaseInterface;
 use App\UseCases\ModelValidators\Contracts\ModelAttributesValidatorUseCaseInterface;
 use App\UseCases\ModelValidators\Contracts\ProcessInstanceAttributesValidatorUseCaseInterface;
+use App\UseCases\Process\Contracts\CheckFlowPatternBpmnProcessUseCaseInterface;
 
 class CreateProcessInstanceUseCase extends CreateUpdateModelAbstractUseCase implements CreateProcessInstanceUseCaseInterface
 {

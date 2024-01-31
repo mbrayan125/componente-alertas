@@ -17,7 +17,8 @@ class AppServiceProvider extends ServiceProvider
         $this->bindUseCasesGroup($mainModels, 'Models', '', 'Create');
         $this->bindUseCasesGroup($mainModels, 'ModelValidators', 'AttributesValidator');
         $this->bindRepositoriesGroup($mainModels, 'Default');
-        $this->bindUseCasesGroup([ 'Read', 'SaveReaded' ], 'Process', 'BpmnProcess');
+        $this->bindUseCasesGroup([ 'Read', 'SaveReaded', 'CheckFlowPattern' ], 'Process', 'BpmnProcess');
+        $this->bindUseCasesGroup([ 'GetSuggestedAlerts' ], 'ProcessInstance', 'ProcessInstance');
         $this->bindUseCasesGroup([ 'Move', 'Remove' ], 'Files', 'File');
         $this->bindUseCasesGroup([ 'Create' ], 'Folders', 'Folder');
     }

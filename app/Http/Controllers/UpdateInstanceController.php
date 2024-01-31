@@ -9,6 +9,7 @@ use App\Repositories\Contracts\TargetSystemRepositoryInterface;
 use App\Traits\Controller\RestrictionsValidationTrait;
 use App\Traits\Response\ResponseConstantsTrait;
 use App\UseCases\Models\Contracts\CreateProcessInstanceUseCaseInterface;
+use App\UseCases\ProcessInstance\Contracts\GetSuggestedAlertsProcessInstanceUseCaseInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -18,9 +19,10 @@ class UpdateInstanceController extends AbstractController
     use ResponseConstantsTrait;
 
     public function __invoke(
-        TargetSystemRepositoryInterface $targetSystemRepository,
-        ProcessInstanceRepositoryInterface $processInstanceRepository,
         CreateProcessInstanceUseCaseInterface $createProcessInstanceUseCase,
+        GetSuggestedAlertsProcessInstanceUseCaseInterface $getSuggestedAlertsProcessInstanceUseCase,
+        ProcessInstanceRepositoryInterface $processInstanceRepository,
+        TargetSystemRepositoryInterface $targetSystemRepository,
         Request $request
     ): JsonResponse {
         
@@ -43,10 +45,12 @@ class UpdateInstanceController extends AbstractController
         $processInstance = $processInstanceRepository->findByTargetSystemAndInstanceToken($targetSystem, $params['process_instance_token']);
 
         if ($nextElementId = $params['next_element_id']) {
-            $updatedProcessInstance = $createProcessInstanceUseCase([
+            $processInstance = $createProcessInstanceUseCase([
                 'next_element_id' => $nextElementId,
             ], $processInstance);
         }
+
+        $suggestedAlerts = ($getSuggestedAlertsProcessInstanceUseCase)($processInstance);
 
 
         return $this->jsonSuccessResult(

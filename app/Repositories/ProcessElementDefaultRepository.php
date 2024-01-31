@@ -61,4 +61,17 @@ class ProcessElementDefaultRepository extends ModelRepositoryAbstract implements
 
         return $processElement;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getElementsByTypeAndProcess(Process $process, string $type): array
+    {
+        $searchParams = [
+            'process_id' => $process->id,
+            'type'       => $type
+        ];
+
+        return $this->findBy($searchParams);
+    }
 }
