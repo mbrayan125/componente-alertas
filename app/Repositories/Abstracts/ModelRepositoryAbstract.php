@@ -21,7 +21,7 @@ abstract class ModelRepositoryAbstract implements ModelRepositoryInterface
      * 
      * @return void
      */
-    public function save(AbstractModel $model)
+    public function save(AbstractModel &$model)
     {
         $model->save();
     }

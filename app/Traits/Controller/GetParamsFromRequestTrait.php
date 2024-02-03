@@ -18,38 +18,18 @@ trait GetParamsFromRequestTrait
      * 
      * @return array The retrieved parameters.
      */
-    public function getParamsFromRequest(Request $request, array $simpleParams, array $fileParams = [])
+    public function getParamsFromRequest(Request $request, array $paramDefinitions)
     {
         $errors = [];
-
         $params = [];
-        $requestParams = $request->all();
 
-        foreach ($simpleParams as $param => $restrictions) {
-            $value = $requestParams[$param] ?? null;
-            $errors = array_merge(
-                $errors,
-                $this->getRestrictionErrorsOnValue($param, $value, $restrictions)
-            );
-            $params[$param] = $value;
-        }
-
-        $tempDir = sys_get_temp_dir();
-        foreach ($fileParams as $param => $restrictions) {
-            $file = $request->file($param) ?? null;
-
-            $restrictions[self::PARAM_TYPE_FILE] = true;
-            $errors = array_merge(
-                $errors,
-                $this->getRestrictionErrorsOnValue($param, $file, $restrictions)
-            );
-            if (is_null($file)) {
-                $params[$param] = null;
+        foreach ($paramDefinitions as $param => $restrictions) {
+            $fileParam = $restrictions[self::PARAM_TYPE_FILE] ?? false;
+            if ($fileParam) {
+                $this->getFileParam($param, $request, $restrictions, $params, $errors);
                 continue;
             }
-            $fileName = $file->getClientOriginalName();
-            $file->move($tempDir, $fileName);
-            $params[$param] = $tempDir . '/' . $fileName;
+            $this->getSimpleParam($param, $request, $restrictions, $params, $errors);
         }
 
         if (!empty($errors)) {
@@ -57,6 +37,57 @@ trait GetParamsFromRequestTrait
         }
 
         return $params;
+    }
+
+    /**
+     * Retrieves a simple parameter from the request and adds it to the params array.
+     *
+     * @param string $param The name of the parameter to retrieve.
+     * @param Request $request The request object.
+     * @param array $restrictions An array of restrictions to apply to the parameter value.
+     * @param array &$params The array to store the retrieved parameter.
+     * @param array &$errors The array to store any errors encountered during retrieval.
+     * 
+     * @return void
+     */
+    private function getSimpleParam(string $param, Request $request, array $restrictions, array &$params, array &$errors)
+    {
+        $requestParams = $request->all();
+        $value = $requestParams[$param] ?? null;
+        $errors = array_merge(
+            $errors,
+            $this->getRestrictionErrorsOnValue($param, $value, $restrictions)
+        );
+        $params[$param] = $value;
+    }
+
+    /**
+     * Retrieves a file parameter from the request and performs validations.
+     *
+     * @param string $param The name of the file parameter.
+     * @param Request $request The request object.
+     * @param array $restrictions The restrictions to apply to the file parameter.
+     * @param array &$params The array to store the parameter value.
+     * @param array &$errors The array to store any validation errors.
+     * 
+     * @return void
+     */
+    private function getFileParam(string $param, Request $request, array $restrictions, array &$params, array &$errors)
+    {
+        $tempDir = sys_get_temp_dir();
+        $file = $request->file($param) ?? null;
+        $restrictions[self::PARAM_TYPE_FILE] = true;
+        $errors = array_merge(
+            $errors,
+            $this->getRestrictionErrorsOnValue($param, $file, $restrictions)
+        );
+        if (is_null($file)) {
+            $params[$param] = null;
+            return;
+        }
+        $fileName = $file->getClientOriginalName();
+        $file->move($tempDir, $fileName);
+        $params[$param] = $tempDir . '/' . $fileName;
     }
 
     /**
@@ -68,23 +99,24 @@ trait GetParamsFromRequestTrait
      * 
      * @return array The array of restriction errors.
      */
-    private function getRestrictionErrorsOnValue(string $param, $value, array $restrictions): array {
+    private function getRestrictionErrorsOnValue(string $param, &$value, array $restrictions): array 
+    {
+        $required = $restrictions[self::RESTRICTION_REQUIRED] ?? false;
+        if ($required && is_null($value)) {
+            return ["El parámetro '$param' es requerido"];
+        }
+        else if (!$required && is_null($value)) {
+            return [];
+        }
+
         $errors = [];
         foreach ($restrictions as $restriction => $restrictionValue) {
             switch ($restriction) {
-
-                case self::RESTRICTION_REQUIRED:
-                    if (is_null($value) && $restrictionValue) {
-                        $errors[] = "El parámetro '$param' es requerido";
-                    }
-                    break;
-
                 case self::RESTRICTION_MAX_LENGTH:
                     if (strlen($value) > $restrictionValue) {
                         $errors[] = "El parámetro '$param' no puede tener más de $restrictionValue caracteres";
                     }
                     break;
-
                 case self::PARAM_TYPE_ARRAY:
                     if (is_array($value)) {
                         $valueKeys = array_keys($value);
@@ -98,14 +130,17 @@ trait GetParamsFromRequestTrait
                         $errors[] = "El parámetro '$param' debe ser un array con las claves " . implode(', ', $restrictionValue);
                     }
                     break;
-
                 case self::PARAM_TYPE_FILE:
-                    if (is_null($value)) {}
-                    else if (!is_a($value, 'Illuminate\Http\UploadedFile')) {
+                    if (!is_a($value, 'Illuminate\Http\UploadedFile')) {
                         $errors[] = "El parámetro '$param' debe ser un archivo";
                     }
                     else if (!$value->isValid()) {
                         $errors[] = "El parámetro '$param' debe ser un fichero válido";
+                    }
+                    break;
+                case self::PARAM_TYPE_BOOL:
+                    if (!is_bool($value)) {
+                        $value = boolval($value);
                     }
                     break;
             }

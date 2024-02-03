@@ -4,14 +4,14 @@ namespace App\UseCases\ProcessInstance\Contracts;
 
 use App\Models\ProcessInstance;
 
-interface GetSuggestedAlertsProcessInstanceUseCaseInterface
+interface GetCurrentStatusPointProcessInstanceUseCaseInterface
 {
     /**
      * Invokes the GetSuggestedAlertsProcessInstanceUseCaseInterface.
      *
      * @param ProcessInstance $processInstance The process instance.
      *
-     * @return array The result of the use case.
+     * @return string|null The result of the use case.
      */
-    public function __invoke(ProcessInstance $processInstance): array;
+    public function __invoke(ProcessInstance $processInstances): ?string;
 }

@@ -9,7 +9,7 @@ class ProcessInstance extends AbstractModel implements ModelPublicMapeableInterf
     protected $fillable = [
         'target_system_id',
         'process_id',
-        'current_element_id',
+        'current_history_id',
         'token'
     ];
 
@@ -28,9 +28,14 @@ class ProcessInstance extends AbstractModel implements ModelPublicMapeableInterf
         return $this->hasMany(ProcessInstanceHistory::class);
     }
 
-    public function currentElement()
+    public function currentHistory()
     {
-        return $this->belongsTo(ProcessElement::class, 'current_element_id');
+        return $this->belongsTo(ProcessInstanceHistory::class, 'current_history_id');
+    }
+
+    public function currentElement(): ?ProcessElement
+    {
+        return $this->currentHistory?->processElement;
     }
 
     /**
@@ -42,15 +47,19 @@ class ProcessInstance extends AbstractModel implements ModelPublicMapeableInterf
         foreach ($this->history as $history) {
             $instanceHistoryArray[] = $history->getPublicMapeableData();
         }
+        $currentStatus = [];
+        if ($this->currentHistory) {
+            $currentStatus = [
+                'current_element'      => $this->currentHistory->processElement->bpmn_id,
+                'current_element_name' => $this->currentHistory->processElement->name,
+            ];
+        }
 
         return [
             'process_token'          => $this->process->token,
             'process_instance_token' => $this->token,
             'created_at'             => $this->created_at,
-            'current_status' => [
-                'current_element'      => $this->currentElement->bpmn_id,
-                'current_element_name' => $this->currentElement->name,
-            ],
+            'current_status'         => $currentStatus,
             'instance_history'       => $instanceHistoryArray
         ];
     }

@@ -9,4 +9,5 @@ trait RestrictionsValidationTrait
 
     private const PARAM_TYPE_ARRAY = 'array';
     private const PARAM_TYPE_FILE = 'file';
+    private const PARAM_TYPE_BOOL = 'bool';
 }

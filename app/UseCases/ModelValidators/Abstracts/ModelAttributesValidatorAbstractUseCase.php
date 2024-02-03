@@ -163,6 +163,12 @@ abstract class ModelAttributesValidatorAbstractUseCase implements ModelAttribute
                 $restrictionsAllowed[] = self::RESTRICTION_MAX_VALUE;
                 $restrictionsAllowed[] = self::RESTRICTION_MIN_VALUE;
                 break;
+            case self::TYPE_BOOL:
+                $typeValidated = is_bool($attributeValue);
+                break;
+            case self::TYPE_ARRAY:
+                $typeValidated = is_array($attributeValue);
+                break;
         }
 
         return $typeValidated;

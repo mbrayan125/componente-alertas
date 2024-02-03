@@ -9,11 +9,14 @@ class Process extends AbstractModel implements ModelPublicMapeableInterface
 {
     protected $fillable = [
         'target_system_id',
+        'name_subject',
         'name_verb',
         'name_complement',
         'token',
         'bpmn_filepath',
-        'version'
+        'version',
+        'risky_execution',
+        'idempotent_execution',
     ];
 
     public function userRoles()
@@ -38,7 +41,7 @@ class Process extends AbstractModel implements ModelPublicMapeableInterface
      */
     public function getFullName()
     {
-        return $this->name_verb . ' ' . $this->name_complement;
+        return sprintf('%s %s %s', $this->name_verb, $this->name_subject, $this->name_complement);
     }
 
     public function getPublicMapeableData(): array

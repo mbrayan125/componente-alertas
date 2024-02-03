@@ -22,6 +22,10 @@ return new class extends Migration
             $table->foreign('process_element_id')->on('process_elements')->references('id');
             $table->foreign('history_previous_id')->on('process_instances_history')->references('id')->onDelete('set null');
         });
+
+        Schema::table('process_instances', function (Blueprint $table) {
+            $table->foreign('current_history_id')->on('process_instances_history')->references('id');
+        });
     }
 
     /**
@@ -29,6 +33,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('process_instances', function (Blueprint $table) {
+            $table->dropForeign(['current_history_id']);
+        });
+
         Schema::dropIfExists('process_instances_history');
     }
 };

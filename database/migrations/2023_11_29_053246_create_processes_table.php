@@ -14,11 +14,14 @@ return new class extends Migration
         Schema::create('processes', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('target_system_id');
+            $table->string('name_subject');
             $table->string('name_verb');
             $table->string('name_complement');
             $table->string('token', 32);
             $table->unsignedInteger('version')->unsigned();
             $table->string('bpmn_filepath');
+            $table->boolean('risky_execution')->default(false);
+            $table->boolean('idempotent_execution')->default(true);
             $table->timestamps();
             $table->foreign('target_system_id')->references('id')->on('target_systems');
         });

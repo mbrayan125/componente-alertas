@@ -17,8 +17,11 @@ return new class extends Migration
             $table->string('type');
             $table->string('visual_representation');
             $table->string('color');
+            $table->string('icon');
+            $table->string('title');
             $table->text('message');
-            $table->text('buttons');
+            $table->json('actions');
+            $table->string('alert_moment');
             $table->timestamps();
 
             $table->foreign('process_instance_history_id')->on('process_instances_history')->references('id');

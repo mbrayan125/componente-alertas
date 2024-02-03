@@ -6,6 +6,8 @@ trait ValidatorConstantsTrait
 {
     public const TYPE_STRING = 'texto';
     public const TYPE_INT    = 'entero';
+    public const TYPE_BOOL   = 'booleano';
+    public const TYPE_ARRAY  = 'colección';
 
     public const RESTRICTION_REQUIRED   = 'attr_required';
     public const RESTRICTION_MIN_LENGTH = 'attr_min_length';

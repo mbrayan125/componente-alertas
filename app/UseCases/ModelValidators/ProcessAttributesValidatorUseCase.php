@@ -17,11 +17,14 @@ class ProcessAttributesValidatorUseCase extends Validator implements ProcessAttr
     protected function getAttributesConfig(): array
     {
         return [
-            'target_system_id' => Attribute::integer()->required()->minValue(1),
-            'name_verb'        => Attribute::string()->required(),
-            'name_complement'  => Attribute::string()->required(),
-            'bpmn_filepath'    => Attribute::string()->required(),
-            'version'          => Attribute::integer()->required()->minValue(1)
+            'target_system_id'     => Attribute::integer()->required()->minValue(1),
+            'name_subject'         => Attribute::string()->required(),
+            'name_verb'            => Attribute::string()->required(),
+            'name_complement'      => Attribute::string()->required(),
+            'bpmn_filepath'        => Attribute::string()->required(),
+            'version'              => Attribute::integer()->required()->minValue(1),
+            'risky_execution'      => Attribute::boolean()->required(),
+            'idempotent_execution' => Attribute::boolean()->required()
         ];
     }
 

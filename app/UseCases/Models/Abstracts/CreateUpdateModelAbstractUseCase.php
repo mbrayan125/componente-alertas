@@ -23,6 +23,7 @@ abstract class CreateUpdateModelAbstractUseCase implements CreateUpdateModelUseC
         DB::beginTransaction();
         try {
             // Attributes validation
+            $update = $current !== null;
             $modelInstance = $current ?? $this->createInstance();
             $validation = ($this->getModelAttributesValidator())($attributes, $modelInstance);
             if (!$validation->success) {
@@ -46,6 +47,9 @@ abstract class CreateUpdateModelAbstractUseCase implements CreateUpdateModelUseC
             $this->getModelRepository()->save($modelInstance);
             $this->postSaveActions($modelInstance, $preparedAttributes, $extraData);
             $this->getModelRepository()->save($modelInstance);
+            if ($update) {
+                $modelInstance->refresh();
+            }
             DB::commit();
 
         } catch (Throwable $exception) {

@@ -37,26 +37,39 @@ class UpdateInstanceController extends AbstractController
                 ],
                 'next_element_id' => [
                     self::RESTRICTION_REQUIRED => false
+                ],
+                'force_generate' => [
+                    self::RESTRICTION_REQUIRED => false,
+                    self::PARAM_TYPE_BOOL      => true
                 ]
             ]
         );
         
         $targetSystem = $targetSystemRepository->findByToken($params['target_system_token']);
         $processInstance = $processInstanceRepository->findByTargetSystemAndInstanceToken($targetSystem, $params['process_instance_token']);
+        $currentElementId = $processInstance->currentElement()?->bpmn_id;
+        $nextElementId = $params['next_element_id'] ?? null;
+        $createAlerts = false;
 
-        if ($nextElementId = $params['next_element_id']) {
+        if ($nextElementId && $currentElementId !== $nextElementId) {
+            $createAlerts = true;
             $processInstance = $createProcessInstanceUseCase([
                 'next_element_id' => $nextElementId,
             ], $processInstance);
         }
 
-        $suggestedAlerts = ($getSuggestedAlertsProcessInstanceUseCase)($processInstance);
 
+        $suggestedAlerts = [];
+        if ($createAlerts || $params['force_generate'] ?? false) {
+            $suggestedAlerts = ($getSuggestedAlertsProcessInstanceUseCase)($processInstance);
+        }
 
+        $processData = $processInstance->getPublicMapeableData();
+        $processData['suggested_alerts'] = $suggestedAlerts;
         return $this->jsonSuccessResult(
             self::HTTP_OK,
             sprintf('Datos sobre instancia', $targetSystem->name),
-            $processInstance->getPublicMapeableData()
+            $processData
         );
     }
 }

@@ -6,7 +6,7 @@ use App\Models\Abstracts\AbstractModel;
 
 interface ModelRepositoryInterface
 {
-    public function save(AbstractModel $model);
+    public function save(AbstractModel &$model);
 
     public function findById($id): ?AbstractModel;
 

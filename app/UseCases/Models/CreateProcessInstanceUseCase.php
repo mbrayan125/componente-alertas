@@ -20,7 +20,7 @@ class CreateProcessInstanceUseCase extends CreateUpdateModelAbstractUseCase impl
     use GenerateTokenTrait;
 
     private bool $newProcessInstance = false;
-    private ?int $currentElementId = null;
+    private ?int $currentHistoryId = null;
 
     public function __construct(
         private readonly CreateProcessInstanceHistoryUseCaseInterface $createProcessInstanceHistoryUseCase,
@@ -44,41 +44,46 @@ class CreateProcessInstanceUseCase extends CreateUpdateModelAbstractUseCase impl
         return $this->processInstanceRepository;
     }
 
+    /**
+     * @inheritDoc
+     */
     protected function preFillActions(AbstractModel &$modelInstance, array &$attributes, array &$extraData): void
     {
         $this->newProcessInstance = $modelInstance->id === null;
-        $this->currentElementId = $modelInstance->current_element_id;
+        $this->currentHistoryId = $modelInstance->current_history_id;
         if (!$modelInstance->token){
             $modelInstance->token = $this->generateToken();
         }
     }
 
-    protected function postFillActions(AbstractModel &$modelInstance, array &$attributes, array &$extraData): void
+    /**
+     * @inheritDoc
+     */
+    protected function postSaveActions(AbstractModel &$modelInstance, array &$attributes, array &$extraData): void
     {
         $process = $modelInstance->process;
         $selectedProcessElement = null;
-        if (!$this->currentElementId) {
+        $createHistory = false;
+
+        if (!$currentHistoryElement = $modelInstance->currentHistory) {
             $selectedProcessElement = $this->processElementRepository->getStartEventByProcess($process);
+            $createHistory = true;
         }
 
         if ($nextElementId = $extraData['next_element_id'] ?? null) {
             $selectedProcessElement = $this->processElementRepository->getByBpmnIdAndProcess($process, $nextElementId);
-            unset($extraData['next_element_id']);
+            if ($currentHistoryElement && $currentHistoryElement->processElement->id !== $selectedProcessElement->id) {
+                $createHistory = true;
+            }
         }
 
-        if ($selectedProcessElement) {
-            $modelInstance->current_element_id = $selectedProcessElement->id;
-        }
-    }
-
-    protected function postSaveActions(AbstractModel &$modelInstance, array &$attributes, array &$extraData): void
-    {
-        if ($modelInstance->current_element_id !== $this->currentElementId) {
-            ($this->createProcessInstanceHistoryUseCase)([
+        if ($createHistory && $selectedProcessElement) {
+            $newHistory = ($this->createProcessInstanceHistoryUseCase)([
                 'process_instance_id' => $modelInstance->id,
-                'process_element_id'  => $modelInstance->current_element_id,
-                'history_previous_id' => $this->currentElementId
+                'process_element_id'  => $selectedProcessElement->id,
+                'history_previous_id' => $currentHistoryElement ? $currentHistoryElement->id : null
             ]);
+            $modelInstance->current_history_id = $newHistory->id;
         }
     }
 }

@@ -36,6 +36,24 @@ class AttributesValidatorDTO
         );
     }
 
+    public static function boolean(): self
+    {
+        return new self(
+            self::TYPE_BOOL,
+            false,
+            []
+        );
+    }
+
+    public static function array(): self
+    {
+        return new self(
+            self::TYPE_ARRAY,
+            false,
+            []
+        );
+    }
+
     public function required(bool $required = true): self
     {
         $this->required = $required;

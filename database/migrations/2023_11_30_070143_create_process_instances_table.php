@@ -15,13 +15,12 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('target_system_id');
             $table->unsignedBigInteger('process_id');
-            $table->unsignedBigInteger('current_element_id');
+            $table->unsignedBigInteger('current_history_id')->nullable();
             $table->string('token');
             $table->timestamps();
 
             $table->foreign('target_system_id')->on('target_systems')->references('id');
             $table->foreign('process_id')->on('processes')->references('id');
-            $table->foreign('current_element_id')->on('process_elements')->references('id');
         });
     }
 

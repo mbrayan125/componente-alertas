@@ -36,7 +36,7 @@ class CreateProcessController extends AbstractController
             [
                 'process_name' => [
                     self::RESTRICTION_REQUIRED => true,
-                    self::PARAM_TYPE_ARRAY     => ['verb', 'complement']
+                    self::PARAM_TYPE_ARRAY     => ['subject', 'verb', 'complement']
                 ],
                 'target_system_token' => [
                     self::RESTRICTION_REQUIRED => true
@@ -44,9 +44,17 @@ class CreateProcessController extends AbstractController
                 'process_token' => [
                     self::RESTRICTION_REQUIRED => false
                 ],
-            ], [
+                'risky_execution' => [
+                    self::RESTRICTION_REQUIRED => true,
+                    self::PARAM_TYPE_BOOL      => true
+                ],
+                'idempotent_execution' => [
+                    self::RESTRICTION_REQUIRED => true,
+                    self::PARAM_TYPE_BOOL      => true
+                ],
                 'process_bpmn' => [
-                    self::RESTRICTION_REQUIRED => true
+                    self::RESTRICTION_REQUIRED => true,
+                    self::PARAM_TYPE_FILE      => true
                 ]
             ]
         );
@@ -58,11 +66,14 @@ class CreateProcessController extends AbstractController
         }
 
         $createdProcess = $createProcessUseCase([
-            'name_verb'          => $creationRequestParams['process_name']['verb'],
-            'name_complement'    => $creationRequestParams['process_name']['complement'],
-            'bpmn_filepath'      => $creationRequestParams['process_bpmn'],
-            'target_system_id'   => $targetSystem->id,
-            'version'            => $currentProcess ? ($currentProcess->version + 1) : 1
+            'name_subject'         => $creationRequestParams['process_name']['subject'],
+            'name_verb'            => $creationRequestParams['process_name']['verb'],
+            'name_complement'      => $creationRequestParams['process_name']['complement'],
+            'bpmn_filepath'        => $creationRequestParams['process_bpmn'],
+            'target_system_id'     => $targetSystem->id,
+            'version'              => $currentProcess ? ($currentProcess->version + 1) : 1,
+            'risky_execution'      => $creationRequestParams['risky_execution'],
+            'idempotent_execution' => $creationRequestParams['idempotent_execution'],
         ]);
 
         return $this->jsonSuccessResult(self::HTTP_CREATED, 'Se ha creado el proceso correctamente', [

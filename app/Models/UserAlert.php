@@ -7,16 +7,23 @@ use App\Models\Abstracts\AbstractModel;
 class UserAlert extends AbstractModel
 {
     protected $fillable = [
-        'process_instance_id',
+        'process_instance_history_id',
         'type',
         'visual_representation',
         'color',
+        'title',
         'message',
-        'buttons'
+        'icon',
+        'actions',
+        'alert_moment'
+    ];
+
+    protected $casts = [
+        'actions' => 'array'
     ];
 
     public function processInstance()
     {
-        return $this->belongsTo(ProcessInstance::class);
+        return $this->belongsTo(ProcessInstanceHistory::class);
     }
 }

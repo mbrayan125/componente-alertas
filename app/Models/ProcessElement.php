@@ -50,6 +50,11 @@ class ProcessElement extends AbstractModel implements ModelPublicMapeableInterfa
             ->wherePivot('direction', 'output');
     }
 
+    public function nextElement()
+    {
+        return $this->outgoingElements()->first();
+    }
+
     public function addIncoming(ProcessElement $incomingElement, string $relationName = '')
     {
         $this->addRelatedElement($incomingElement, 'input', $relationName);
