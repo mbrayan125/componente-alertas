@@ -42,12 +42,7 @@ class GetTargetSystemController extends AbstractController
         return $this->jsonSuccessResult(
             self::HTTP_OK,
             sprintf('Datos sobre %s', $targetSystem->name),
-            [
-                'name'                => $targetSystem->name,
-                'target_system_token' => $targetSystem->token,
-                'created_at'          => $targetSystem->created_at,
-                'processes'           => []
-            ]
+            $targetSystem->getPublicMapeableData()
         );
     }
 }
