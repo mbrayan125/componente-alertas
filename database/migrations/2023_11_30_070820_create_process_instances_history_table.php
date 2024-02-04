@@ -33,9 +33,11 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('process_instances', function (Blueprint $table) {
-            $table->dropForeign(['current_history_id']);
-        });
+        if (config('database.default') !== 'sqlite') {
+            Schema::table('process_instances', function (Blueprint $table) {
+                $table->dropForeign(['current_history_id']);
+            });
+        }
 
         Schema::dropIfExists('process_instances_history');
     }

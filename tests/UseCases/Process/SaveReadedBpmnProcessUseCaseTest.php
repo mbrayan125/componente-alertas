@@ -4,15 +4,13 @@ namespace Tests;
 
 use App\DataResultObjects\Process\ReadBpmnUseCaseDRO;
 use App\Repositories\Contracts\ProcessElementRepositoryInterface;
-use App\Repositories\Contracts\ProcessRepositoryInterface;
 use App\Traits\Process\ElementsTypesConstantsTrait;
 use App\UseCases\Process\Contracts\SaveReadedBpmnProcessUseCaseInterface;
-use Database\Factories\TargetSystemFactory;
+use Database\Factories\ProcessFactory;
 use Tests\TestCase;
 
 class SaveReadedBpmnProcessUseCaseTest extends TestCase
 {
-
     use ElementsTypesConstantsTrait;
 
     /**
@@ -48,21 +46,15 @@ class SaveReadedBpmnProcessUseCaseTest extends TestCase
         [ $expectedProcessElementsParams, $expectedProcessElementsConnections ] = $this->generateExpectedCalls($readMockedResult);
 
         // Execute use case
-        $testTargetSystem = TargetSystemFactory::new()->create([]);
+        $targetProcess = ProcessFactory::new()->create();
         $saveReadedBpmnProcess = app()->make(SaveReadedBpmnProcessUseCaseInterface::class);
-        $saveReadedBpmnProcess($readMockedResult, $testTargetSystem);
-
-        // Validate the creation of the process
-        $processRepository = app()->make(ProcessRepositoryInterface::class);
-        $expectedProcessParams = [ 'target_system_id' => $testTargetSystem->id, 'version' => 1 ];
-        $this->seeInDatabase('processes', $expectedProcessParams);
-        $createdProcess = $processRepository->findOneBy($expectedProcessParams);
+        $saveReadedBpmnProcess($readMockedResult, $targetProcess);
 
         // Validate the creation of the elements
         $createdProcesElementsIds = [];
         $processElementRepository = app()->make(ProcessElementRepositoryInterface::class);
         foreach ($expectedProcessElementsParams as $elementXmlId => $expectedProcessElementParams) {
-            $expectedProcessElementParams['process_id'] = $createdProcess->id;
+            $expectedProcessElementParams['process_id'] = $targetProcess->id;
             $this->seeInDatabase('process_elements', $expectedProcessElementParams);
             $createdProcesElement = $processElementRepository->findOneBy($expectedProcessElementParams);
             $createdProcesElementsIds[$elementXmlId] = $createdProcesElement->id;

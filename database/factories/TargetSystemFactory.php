@@ -13,8 +13,7 @@ class TargetSystemFactory extends Factory
     {
     	return [
             'name'         => $this->faker->name,
-            'nickname'     => $this->faker->regexify('[A-Za-z0-9]{12}'),
-            'process_path' => $this->faker->filePath(),
+            'token'     => $this->faker->regexify('[a-f0-9]{32}')
     	];
     }
 }
