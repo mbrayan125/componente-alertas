@@ -172,19 +172,26 @@ class GetSuggestedAlertsProcessInstanceUseCase implements GetSuggestedAlertsProc
         $currentProcessHistory = $processInstance->currentHistory;
         $currentElement = $currentProcessHistory->processElement;
 
-        $alert = [
-            'process_instance_history_id' => $processInstance->id,
-            'type'                        => self::ALERT_TYPE_FEEDFORWARD,
-            'visual_representation'       => self::ALERT_VISUAL_REPRESENTATION_MESSAGE_BOX,
-            'color'                       => '',
-            'message'                     => 'Confirmar elección',
-            'icon'                        => '',
-            'title'                       => '',
-            'alert_moment'                => self::ALERT_MOMENT_TRANSITION_OUT,
-            'actions'                     => [ 'Continuar', 'Cancelar' ]
-        ];
-        ($this->createUserAlertUseCaseInterface)($alert);
+        $alerts = [];
+        foreach ($currentElement->outgoingElements as $outgoingElement) {
+            $gatewayName = $outgoingElement->pivot->name;
 
-        return [$alert];
+            $alert = [
+                'process_instance_history_id' => $processInstance->id,
+                'type'                        => self::ALERT_TYPE_FEEDFORWARD,
+                'visual_representation'       => self::ALERT_VISUAL_REPRESENTATION_MESSAGE_BOX,
+                'color'                       => self::ALERT_COLOR_BLUE,
+                'message'                     => 'Continuar mediante ' . $gatewayName,
+                'icon'                        => self::ALERT_ICON_QUESTION_CIRCLE,
+                'title'                       => 'Confirmar elección',
+                'alert_moment'                => self::ALERT_MOMENT_TRANSITION_OUT,
+                'actions'                     => [ 'Continuar', 'Cancelar' ]
+            ];
+            ($this->createUserAlertUseCaseInterface)($alert);
+            $alerts[] = $alert;
+
+        }
+
+        return $alerts;
     }
 }

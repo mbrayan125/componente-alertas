@@ -40,14 +40,16 @@ class ProcessElement extends AbstractModel implements ModelPublicMapeableInterfa
     {
         return $this
             ->relatedElements()
-            ->wherePivot('direction', 'input');
+            ->wherePivot('direction', 'input')
+            ->withPivot('name');
     }
 
     public function outgoingElements()
     {
         return $this
             ->relatedElements()
-            ->wherePivot('direction', 'output');
+            ->wherePivot('direction', 'output')
+            ->withPivot('name');
     }
 
     public function nextElement()

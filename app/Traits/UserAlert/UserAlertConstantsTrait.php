@@ -21,6 +21,7 @@ trait UserAlertConstantsTrait
     public const ALERT_ICON_EXCLAMATION_TRIANGLE = 'fa-exclamation-triangle';
     public const ALERT_ICON_CHECK_CIRCLE         = 'fa-check-circle';
     public const ALERT_ICON_SAND_CLOCK           = 'fa-hourglass-half';
+    public const ALERT_ICON_QUESTION_CIRCLE     = 'fa-question-circle';
 
     public const ALERT_MOMENT_TRANSITION_OUT = 'transition-out';
 }
