@@ -48,7 +48,7 @@ Para que un sistema objetivo pueda integrarse con el componente, deberá impleme
 
 # Métodos del API REST
 
-<span style='color: #d9714c; font-weight: bold'>POST</span> /targetsystem
+**<font color='#d9714c'>POST</font>** /targetsystem
 <br>
 Registra un sistema objetivo en el componente y retorna un token para su uso en los demás endpoints.
 
@@ -61,7 +61,7 @@ Registra un sistema objetivo en el componente y retorna un token para su uso en 
 - `created_at`: Fecha de creación del sistema objetivo
 <br><br>
 
-<span style='color: #1e9441; font-weight: bold'>GET</span> /targetsystem
+**<font color='#1e9441'>GET</font>**/targetsystem
 <br>
 Obtiene la información asociada a un sistema objetivo registrado en el componente.
 
@@ -76,7 +76,7 @@ Obtiene la información asociada a un sistema objetivo registrado en el componen
 - `processes`: Datos de los procesos asociados al sistema objetivo
 <br><br>
 
-<span style='color: #d9714c; font-weight: bold'>POST</span> /process
+**<font color='#d9714c'>POST</font>** /process
 <br>
 Registra un proceso de negocio en un sistema objetivo.
 
@@ -98,7 +98,7 @@ Registra un proceso de negocio en un sistema objetivo.
 - `created_at`: Fecha de creación del proceso
 <br><br>
 
-<span style='color: #1e9441; font-weight: bold'>GET</span> /process
+**<font color='#1e9441'>GET</font>**/process
 <br>
 Obtiene los datos relacionados a un proceso en un sistema objetivo.
 
@@ -117,7 +117,7 @@ Obtiene los datos relacionados a un proceso en un sistema objetivo.
 - `user_roles`: Roles del proceso
 <br><br>
 
-<span style='color: #d9714c; font-weight: bold'>POST</span> /instance
+**<font color='#d9714c'>POST</font>** /instance
 <br>
 Registra una instancia de ejecución para un proceso específico.
 
@@ -131,7 +131,7 @@ Registra una instancia de ejecución para un proceso específico.
 - `created_at`: Fecha de creación de la instancia
 <br><br>
 
-<span style='color: #1e9441; font-weight: bold'>GET</span> /instance
+**<font color='#1e9441'>GET</font>**/instance
 <br>
 Obtiene los datos de una instancia de proceso.
 
@@ -148,7 +148,7 @@ Obtiene los datos de una instancia de proceso.
 - `instance_history`: Historial de la instancia
 <br><br>
 
-<span style='color: #275eb8; font-weight: bold'>PUT</span> /instance
+**<font color='#275eb8'>PUT</font>** /instance
 <br>
 Actualiza el estado de una instancia de proceso.
 
