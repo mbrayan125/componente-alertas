@@ -12,6 +12,8 @@ Es requerido tener instaladas las herramientas Docker y Docker-compose en el amb
 <br><br>
 
 # Instalación
+A continuación se describen los pasos para la puesta en marcha del (tutorial disponible en https://youtu.be/RZaeL4PRAGE)
+
 Luego de clonar el repositorio, es necesario inicializar los contenedores que soportan la lógica del componente. Usando una consola ubicada en la carpeta contenedora, ejecutar los siguientes comandos para la construcción de los contenedores:
 
 ```sh
